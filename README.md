@@ -1,93 +1,132 @@
-## Projeto: Microsserviço Backend com Flask e SQLite
+# 🏘️ Comunidade API — Backend Flask
 
-Este é um projeto backend que utiliza Flask e SQLite, gerenciando rotas e operações CRUD através de métodos HTTP (GET, POST, PUT, DELETE) para para `Usuario` e `Post`. A aplicação pode ser executada facilmente em um contêiner Docker.
+API RESTful de uma plataforma de comunidade, com autenticação de usuários,
+gerenciamento de perfis e publicação de posts.
+
+![Python](https://img.shields.io/badge/Python-3.12-blue?logo=python)
+![Flask](https://img.shields.io/badge/Flask-3.x-black?logo=flask)
+![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-ORM-red)
+![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker)
+![CI](https://github.com/TatyDePaula/comunidade-api/actions/workflows/ci.yml/badge.svg)
+
+## ✨ Funcionalidades
+
+- Cadastro e autenticação de usuários com Flask-Login e bcrypt
+- Perfil com foto, endereço com preenchimento automático via CEP
+- CRUD completo de Posts vinculados ao autor
+- Validação de email único no cadastro
+- Containerização com Docker
+- Testes automatizados com pytest
+
+## 🧱 Stack
+
+- **Python 3.12** · **Flask** · **SQLAlchemy** · **Flask-Login**
+- **Flask-Bcrypt** · **Flask-CORS** · **Flask-RESTX**
+- **SQLite** · **Docker** · **pytest**
+
+## 📂 Estrutura
+```
+comunidade-api/
+├── backend/
+│   ├── __init__.py        # App factory, db, login_manager
+│   ├── models.py          # Modelos Usuario e Post
+│   ├── usuario_routes.py  # Rotas de usuário
+│   └── post_routes.py     # Rotas de post
+├── tests/
+│   ├── __init__.py
+│   └── test_api.py        # Testes automatizados
+├── instance/
+│   └── comunidade.db      # Banco SQLite (gerado automaticamente)
+├── .github/
+│   └── workflows/
+│       └── ci.yml         # GitHub Actions CI
+├── main.py
+├── Dockerfile
+├── requirements.txt
+└── .gitignore
+```
+
+## 🚀 Como rodar
 
 ### Pré-requisitos
+- Docker **ou** Python 3.12+
 
-Antes de começar, você precisará ter os seguintes programas instalados na sua máquina:
-
-- [Docker](https://www.docker.com/)
-- [Postman](https://www.postman.com/) (opcional, para testar as rotas)
-
-### Estrutura do Projeto
-
-A estrutura do projeto é a seguinte:
-
-microsservico-backend/
-│
-├── backend/
-│   ├── __init__.py
-│   ├── models.py
-│   ├── post_routes.py
-│   └── usuario_routes.py
-│
-├── instance/
-│   └── comunidade.db
-│
-├── Dockerfile
-├── main.py
-├── README.md
-└── requirements.txt
-
-
-- **backend/**: Contém os arquivos principais de rotas e modelos da aplicação.
-- **instance/**: Contém o banco de dados SQLite.
-- **Dockerfile**: Arquivo para construir a imagem Docker.
-- **main.py**: Arquivo principal que inicializa o servidor Flask e configura o banco de dados.
-- **requirements.txt**: Lista de dependências Python.
-
-### Instalação e Execução via Docker
-
-Siga os passos abaixo para executar o projeto usando Docker.
-
-#### Passo 1: Clonar o repositório
-
-Clone este repositório em sua máquina:
-
+### Com Docker (recomendado)
 ```bash
-git clone https://github.com/TatyDePaula/microsservico-backend.git
+# Clone o repositório
+git clone https://github.com/TatyDePaula/comunidade-api.git
+cd comunidade-api
 
-Passo 2: Construir a imagem Docker
+# Build e execução
+docker build -t comunidade-api .
+docker run -d -p 5000:5000 --name comunidade-api comunidade-api
+```
 
-No diretório do projeto, construa a imagem Docker utilizando o Dockerfile. Execute o seguinte comando no terminal:
+### Localmente
+```bash
+git clone https://github.com/TatyDePaula/comunidade-api.git
+cd comunidade-api
 
-docker build -t backend .
+python -m venv venv
+venv\Scripts\activate        # Windows
+pip install -r requirements.txt
 
-Passo 3: Executar o contêiner
+python main.py
+```
 
-Após construir a imagem, execute o contêiner, é importante que este contêiner seja executado com volume:
-docker run -d -p 5000:5000 -v C:/Users/tatyd/Desktop/microsservico-backend-main/backend:/app --name backend backend
+A aplicação estará disponível em `http://127.0.0.1:5000`
 
--p 5000:5000: Mapeia a porta 5000 do contêiner para a porta 5000 da sua máquina.
--v C:/Users/tatyd/Desktop/microsservico-backend-main/backend/app: informa o caminho e monta o diretório atual no contêiner, permitindo que as alterações no código e banco de dados sejam refletidas instantaneamente.
+## 📡 Endpoints
 
-Passo 4: Testar as rotas
-Agora você pode testar as rotas utilizando o Postman ou outra ferramenta de requisições HTTP. A aplicação estará disponível em http://127.0.0.1:5000.
+### Usuários
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| GET | `/api/usuarios` | Lista todos os usuários |
+| GET | `/api/usuarios/<id>` | Busca usuário por ID |
+| POST | `/api/usuarios` | Cria novo usuário |
+| PUT | `/api/usuarios/<id>` | Atualiza usuário |
+| DELETE | `/api/usuarios/<id>` | Remove usuário |
 
-Exemplos de rotas:
+### Posts
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| GET | `/api/posts` | Lista todos os posts |
+| GET | `/api/posts/<id>` | Busca post por ID |
+| POST | `/api/posts` | Cria novo post |
+| PUT | `/api/posts/<id>` | Atualiza post |
+| DELETE | `/api/posts/<id>` | Remove post |
 
-GET: Listar usuários
+### Exemplo de payload — criar usuário
+```json
+{
+  "username": "tatiane",
+  "email": "taty@email.com",
+  "senha": "senha123",
+  "cep": "01310-100",
+  "endereco": "Av. Paulista, 1000",
+  "cursos": "Python, Flask"
+}
+```
 
-GET http://127.0.0.1:5000/api/usuarios
+## 🧪 Testes
+```bash
+pip install pytest pytest-cov
+pytest tests/ -v
+```
 
-POST: Criar um novo usuário
+## 🐳 Monitorar logs Docker
+```bash
+docker logs -f comunidade-api
+```
 
-POST http://127.0.0.1:5000/api/usuarios
+## ⚠️ Observação
 
-PUT http://127.0.0.1:5000/api/usuarios/<id>
+Projeto configurado para desenvolvimento. Para produção,
+recomenda-se usar **Gunicorn** como servidor WSGI e banco
+de dados mais robusto como PostgreSQL.
 
-DELETE http://127.0.0.1:5000/api/usuarios/<id>
+## 👩‍💻 Autora
 
-Banco de Dados
-O banco de dados SQLite comunidade.db será criado automaticamente na pasta instance/ quando o projeto for executado. Todas as operações CRUD são refletidas em tempo real no banco de dados.
-
-Logs
-Para monitorar os logs do contêiner, execute o seguinte comando:
-
-bash
-Copiar código
-docker logs -f <CONTAINER_ID>
-Substitua <CONTAINER_ID> pelo ID do contêiner em execução.
-
-Considerações Finais
-Este projeto está configurado para desenvolvimento e não deve ser utilizado diretamente em produção. Para ambientes de produção, recomenda-se utilizar um servidor WSGI (como Gunicorn) e configurar volumes persistentes adequadamente.
+**Tatiane de Paula** — Dev Full Stack Python · AWS Cloud Practitioner  
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Tatiane-blue?logo=linkedin)](https://linkedin.com/in/seu-perfil)
+[![GitHub](https://img.shields.io/badge/GitHub-TatyDePaula-black?logo=github)](https://github.com/TatyDePaula)
