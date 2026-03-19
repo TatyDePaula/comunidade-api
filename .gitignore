@@ -1,0 +1,27 @@
+# Ambiente virtual
+venv/
+env/
+.env
+
+# Banco de dados
+instance/
+*.db
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# VS Code
+.vscode/
+
+# Windows
+Thumbs.db
+desktop.ini
