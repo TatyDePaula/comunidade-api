@@ -32,7 +32,11 @@ def get_usuario(id):
 @usuario_bp.route('/usuarios', methods=['POST'])
 def create_usuario():
     data = request.get_json()
-    print(data)
+
+    # Verifica se email já está cadastrado
+    if Usuario.query.filter_by(email=data['email']).first():
+        return jsonify({'error': 'Email já cadastrado'}), 409
+
     new_user = Usuario(
         username=data['username'],
         email=data['email'],
